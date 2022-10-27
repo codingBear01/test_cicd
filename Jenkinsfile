@@ -54,10 +54,9 @@ pipeline{
             steps {
                 script{
                     try{
-                        docker.withRegistry("https://${ECR_REPO}", "ecr:ap-northeast-2:${AWS_CREDENTIALS}") {
-                          docker.image("${NAME}:${env.BUILD_NUMBER}").push()
-                          docker.image("${NAME}:latest").push()
-                        }
+                        sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REPO}"
+                        sh "docker tag ${NAME}:latest ${ECR_REPO}:latest"
+                        sh "docker push ${ECR_REPO}:latest"
                     }catch(error){
                         print(error)
                         currentBuild.result = 'FAILURE'
