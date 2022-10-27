@@ -17,7 +17,7 @@ pipeline{
         stage('Build') {
             steps {
                 sh "docker build -t ${NAME} ."
-                sh "docker tag ${NAME}:latest ${NAME}:latest"
+                // sh "docker tag ${NAME}:latest ${NAME}:latest"
             }
         }
         stage('ECR Upload'){
