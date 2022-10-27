@@ -54,7 +54,7 @@ pipeline{
             steps {
                 script{
                     try{
-                        docker.withRegistry("${ECR_REPO}", "ecr:ap-northeast-2:${AWS_CREDENTIALS}") {
+                        docker.withRegistry("https://${ECR_REPO}", "ecr:ap-northeast-2:${AWS_CREDENTIALS}") {
                           docker.image("${NAME}:latest").push()
                         }
                     }catch(error){
