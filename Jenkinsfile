@@ -3,7 +3,7 @@ pipeline{
 
     environment {
         ECR_REPO = "347222812711.dkr.ecr.ap-northeast-2.amazonaws.com/test_cicd"
-        AWS_CREDENTIALS="ID_TEST_CICD"
+        AWS_CREDENTIALS="ID_DEPLOY_USER"
         GIT_CREDENTIAL_ID = "fe_test_account"
         NAME = "test_cicd"
         GIT_URL="https://github.com/codingBear01/test_cicd"
@@ -17,7 +17,7 @@ pipeline{
         stage('Build') {
             steps {
                 sh "docker build -t ${NAME} ."
-                sh "docker tag ${NAME}:latest ${ECR_REPO}/${NAME}:latest"
+                sh "docker tag ${NAME}:latest ${NAME}:latest"
             }
         }
         stage('ECR Upload'){
