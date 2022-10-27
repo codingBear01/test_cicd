@@ -27,13 +27,36 @@ pipeline{
                 // sh "docker tag ${NAME}:latest ${NAME}:latest"
             }
         }
+        // stage('ECR Upload'){
+        //     steps {
+        //         script{
+        //             try{
+        //                 withAWS(credentials: "${AWS_CREDENTIALS}", role: 'arn:aws:iam::347222812711:role/deploy-role:role/jenkins-deploy-role', roleAccount: "${AWS_CREDENTIALS}", externalId: 'externalId'){
+        //                     sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 347222812711.dkr.ecr.ap-northeast-2.amazonaws.com/test_cicd"
+        //                     sh "docker push ${ECR_REPO}"
+        //                 }
+        //             }catch(error){
+        //                 print(error)
+        //                 currentBuild.result = 'FAILURE'
+        //             }
+        //         }
+        //     }
+        //     post{
+        //         success {
+        //             echo "The ECR Upload stage successfully."
+        //         }
+        //         failure{
+        //             echo "The ECR Upload stage failed."
+        //         }
+        //     }
+        // }
         stage('ECR Upload'){
             steps {
                 script{
                     try{
-                        withAWS(credentials: "${AWS_CREDENTIALS}", role: 'arn:aws:iam::347222812711:role/deploy-role:role/jenkins-deploy-role', roleAccount: "${AWS_CREDENTIALS}", externalId: 'externalId'){
-                            sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 347222812711.dkr.ecr.ap-northeast-2.amazonaws.com/test_cicd"
-                            sh "docker push ${ECR_REPO}"
+                        docker.withRegistry("${ECR_REPO}", "ecr:ap-northeast-2:${AWS_CREDENTIALS}") {
+                          docker.image("${NAME}:${BUILD_NUMBER}").push()
+                          docker.image("${NAME}:latest").push()
                         }
                     }catch(error){
                         print(error)
