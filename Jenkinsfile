@@ -23,8 +23,9 @@ pipeline{
         }
         stage('Build') {
             steps {
-                sh "docker build -t ${NAME} ."
+                // sh "docker build -t ${NAME} ."
                 // sh "docker tag ${NAME}:latest ${NAME}:latest"
+                app = docker.build("${ECR_REPO}")
             }
         }
         // stage('ECR Upload'){
@@ -55,7 +56,8 @@ pipeline{
                 script{
                     try{
                         docker.withRegistry("https://${ECR_REPO}", "ecr:ap-northeast-2:${AWS_CREDENTIALS}") {
-                          docker.image("${NAME}:latest").push()
+                          app.push("${env.BUILD_NUMBER}")
+                          app.push("latest")
                         }
                     }catch(error){
                         print(error)
