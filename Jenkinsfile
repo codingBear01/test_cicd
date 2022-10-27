@@ -34,7 +34,7 @@ pipeline{
                       // // role: 'arn:aws:iam::347222812711:user/deploy_user', roleAccount: 'deploy_user', externalId:'externalId'
                       // ){
                         sh "aws ecr --region ap-northeast-2 | docker login -u AWS -p ${ENCRYPTED_TOKEN} ${ECR_REPO}"
-                        sh "docker tag ${NAME}:latest ${ECR_REPO}"
+                        sh "docker tag ${NAME}:latest ${ECR_REPO}:latest"
                         sh "docker push ${ECR_REPO}"
                       // }
                     }catch(error){
