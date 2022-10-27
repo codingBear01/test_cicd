@@ -25,7 +25,9 @@ pipeline{
             steps {
                 // sh "docker build -t ${NAME} ."
                 // sh "docker tag ${NAME}:latest ${NAME}:latest"
-                app = docker.build("${ECR_REPO}")
+                script {
+                  app = docker.build("${ECR_REPO}")
+                }
             }
         }
         // stage('ECR Upload'){
