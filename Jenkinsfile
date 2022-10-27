@@ -45,4 +45,3 @@ pipeline{
         }
     }
 }
-출처: https://ongamedev.tistory.com/475 [가끔 보자, 하늘.:티스토리]
