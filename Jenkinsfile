@@ -4,9 +4,6 @@ pipeline{
       nodejs "node 16.18.0"
       git "git"
     }
-    options {
-        skipStagesAfterUnstable()
-    }
     environment {
         ECR_REPO = "347222812711.dkr.ecr.ap-northeast-2.amazonaws.com/test_cicd"
         AWS_CREDENTIALS="ID_DEPLOY_USER"
@@ -15,34 +12,25 @@ pipeline{
         GIT_URL="https://github.com/codingBear01/test_cicd"
     }
     stages {
-          stage('Clone repository') { 
-            steps { 
-                script{
-                checkout scm
-                }
-            }
-        }
-        stage('Build') { 
-            steps { 
-                script{
-                  app = docker.build("${NAME}")
-                }
-            }
-        }
-        stage('Test'){
+        stage('Pull') {
             steps {
-                  echo 'Empty'
+                git url:"${GIT_URL}", branch:"main", 
+                poll:true, 
+                changelog:true, 
+                credentialsId: "${GIT_CREDENTIAL_ID}"
             }
         }
-        stage('Deploy') {
+        stage('Build') {
+            steps {
+                sh "docker build -t ${NAME} ."
+                sh "docker tag ${NAME}:latest ${NAME}:latest"
+            }
+        }
+        stage('ECR Upload'){
             steps {
                 script{
-                        docker.withRegistry("https://${ECR_REPO}", "ecr:us-east-2:${AWS_CREDENTIALS}") {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
-                    }
-                }
-            }
-        }
-    }
-}
+                    try{
+                      withAWS(credentials:"${AWS_CREDENTIALS}", role: 'arn:aws:iam::347222812711:user/deploy_user:role/deploy_user', roleAccount: 'deploy_user', externalId:'externalId'){
+                        sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REPO}"
+                        sh "docker tag ${NAME}:latest ${ECR_REPO}:latest"
+                        sh "docker push ${ECR_REPO}:latest"
