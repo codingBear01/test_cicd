@@ -1,11 +1,5 @@
 pipeline{
-    // agent any
-    agent {
-      docker {
-        image 'node:16.18.0'
-        args '-p 3000:3000'
-      }
-    }
+    agent any
 
     // environment {
     //     ECR_REPO = "347222812711.dkr.ecr.ap-northeast-2.amazonaws.com/test_cicd"
