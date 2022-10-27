@@ -54,6 +54,7 @@ pipeline{
             steps {
                 script{
                     try{
+                        sh"aws configure"
                         sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REPO}"
                         sh "docker tag ${NAME}:latest ${ECR_REPO}:latest"
                         sh "docker push ${ECR_REPO}:latest"
