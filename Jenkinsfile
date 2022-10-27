@@ -30,10 +30,10 @@ pipeline{
             steps {
                 script{
                     try{
-                      withAWS(credentials:"${AWS_CREDENTIALS}", role: 'arn:aws:iam::347222812711:user/deploy_user:role/deploy_user', roleAccount: 'deploy_user', externalId:'externalId'){
-                        sh "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REPO}"
-                        sh "docker tag ${NAME}:latest ${ECR_REPO}:latest"
-                        sh "docker push ${ECR_REPO}:latest"
+                      withAWS(credentials:"${AWS_CREDENTIALS}", role: 'arn:aws:iam::347222812711:user/deploy_user', roleAccount: 'deploy_user', externalId:'externalId'){
+                        sh "aws ecr --region ap-northeast-2 | docker login -u AWS --password-stdin ${ECR_REPO}"
+                        sh "docker tag ${NAME}:latest ${ECR_REPO}"
+                        sh "docker push ${ECR_REPO}"
                       }
                     }catch(error){
                         print(error)
