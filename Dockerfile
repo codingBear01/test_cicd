@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 
 # Make port 3000 available to the world outside this container
-ENV PORT=3000
+ENV TZ Asia/Seoul
 EXPOSE 3000
 
 # start app
